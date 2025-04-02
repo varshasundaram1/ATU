@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMR Storyboarding & Analytical Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --secondary-light: #22d3ee;
+            --secondary-dark: #0891b2;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --border-light: #e2e8f0;
+            --success: #10b981;
+            --info: #0ea5e9;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--secondary);
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-outline-primary {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--primary-light);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--bg-light);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid var(--border-light);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--bg-white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background-color: var(--bg-white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .row {
+            display: flex;
+            margin-left: -12px;
+            margin-right: -12px;
+            flex-wrap: wrap;
+        }
+
+        .col {
+            padding-left: 12px;
+            padding-right: 12px;
+            flex: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-light);
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .checkbox-item input {
+            margin-right: 8px;
+            accent-color: var(--primary);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        select.form-control {
+            appearance: none;
+            padding-right: 35px;
+            background-color: var(--bg-white);
+            cursor: pointer;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .framework-tabs {
+            display: flex;
+            background-color: var(--bg-light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .framework-tab {
+            padding: 14px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            flex: 1;
+            color: var(--text);
+            position: relative;
+            letter-spacing: 0.01em;
+        }
+
+        .framework-tab.active {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .framework-tab:not(.active):hover {
+            background-color: #e5e9f0;
+        }
+
+        .section-divider {
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 4px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-top: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .ai-generated-tag {
+            background: linear-gradient(90deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: 12px;
+            font-weight: 500;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: auto;
+            transition: all 0.2s;
+            border-radius: 50%;
+            height: 40px;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(6, 182, 212, 0.1);
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(6, 182, 212, 0.2);
+            transform: scale(1.1);
+        }
+
+        .finding-item {
+            margin-bottom: 20px;
+            border-left: 3px solid var(--primary-light);
+            padding-left: 15px;
+            transition: all 0.2s;
+        }
+
+        .finding-item:hover {
+            border-left-color: var(--secondary);
+        }
+
+        .finding-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .bullet-list {
+            padding-left: 20px;
+            margin-top: 10px;
+            list-style-type: none;
+        }
+
+        .bullet-item {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 5px;
+        }
+
+        .bullet-item::before {
+            content: "•";
+            position: absolute;
+            left: -18px;
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .benchmark {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+            display: inline-block;
+            background-color: rgba(203, 213, 225, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        .segmented-section {
+            display: flex;
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .segment-column {
+            flex: 1;
+            background-color: var(--bg-white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+        }
+
+        .segment-column:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .segment-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 992px) {
+            .segmented-section {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-header h1,
+            .menu-item span {
+                display: none;
+            }
+
+            .menu-item i {
+                margin-right: 0;
+                font-size: 1.3rem;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .row {
+                flex-direction: column;
+            }
+
+            .col {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>PMR Storyboarding</h1>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item active">
+                    <i class="fas fa-file-medical"></i>
+                    <span>New Storyboard</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-save"></i>
+                    <span>Saved Storyboards</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-database"></i>
+                    <span>Data Sources</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Benchmarks</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Team Collaborators</span>
+                </div>
+                <div class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1 class="page-title">New Storyboard</h1>
+                <button class="btn btn-primary" id="generate-btn">
+                    <i class="fas fa-magic"></i> Generate Storyboard
+                </button>
+            </div>
+
+            <!-- Input Form Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Analysis Question/Prompt</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <textarea class="form-control">What factors drive Alunbrig's prescription? Give me the overall insights and insights for various segments like academic vs. community.</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Client Context</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Client's Key Questions:</label>
+                                <textarea class="form-control">The company has a blockbuster drug, Alunbrig, that recently entered a highly competitive market but was not yet the preferred option.</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Data Sources</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="ap-portal" checked>
+                                    <label for="ap-portal">AP Portal</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="synapse" checked>
+                                    <label for="synapse">Synapse</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="benchmarks" checked>
+                                    <label for="benchmarks">Benchmarks</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="secondary" checked>
+                                    <label for="secondary">Secondary Market Information</label>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label>Specific Data Files:</label>
+                                <input type="text" class="form-control" placeholder="Enter specific file names if applicable">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Analysis Parameters</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Framework:</label>
+                                        <div class="select-wrapper">
+                                            <select class="form-control">
+                                                <option>WHAT-SO WHAT-NOW WHAT</option>
+                                                <option>ADOPTION FUNNEL</option>
+                                                <option>BRAND EQUITY</option>
+                                                <option>MESSAGE MATRIX</option>
+                                                <option>STATED VS DERIVED</option>
+                                                <option>CUSTOM FRAMEWORK</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Time Period:</label>
+                                        <div class="select-wrapper">
+                                            <select class="form-control">
+                                                <option>Last 3 Waves</option>
+                                                <option>Last 6 Months</option>
+                                                <option>Last 12 Months</option>
+                                                <option>Custom</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Output Depth:</label>
+                                        <div class="select-wrapper">
+                                            <select class="form-control">
+                                                <option>Executive Summary</option>
+                                                <option>Detailed Analysis</option>
+                                                <option>Comprehensive Report</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Segment Focus:</label>
+                                        <div class="select-wrapper">
+                                            <select class="form-control">
+                                                <option>Academic vs Community MDs</option>
+                                                <option>Early vs Late Adopters</option>
+                                                <option>Primary Care vs Specialists</option>
+                                                <option>Custom Segments</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Landscape Section -->
+            <div class="section-divider"></div>
+            <div class="section-header">
+                <h2>Market Landscape</h2>
+                <span class="ai-generated-tag">AI-generated</span>
+                <button class="icon-btn" id="edit-landscape-btn">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div id="landscape-content">
+                        <p>Alunbrig (brigatinib) is a second-generation ALK inhibitor for ALK-positive metastatic non-small cell lung cancer (NSCLC), approved by the FDA in 2017 for patients who progressed on crizotinib, and in 2020 for first-line treatment. The ALK-positive NSCLC market is highly competitive, with ALECENSA (alectinib) dominating at $1.65 billion in global sales in 2023, while Alunbrig's sales are lower, e.g., $27.3 million in Q3 2023.</p>
+                        <p>The ALK inhibitor market is projected to reach $10.6 billion by 2030, driven by rising NSCLC cases. Competitors include ALECENSA, LORBRENA (lorlatinib), XALKORI (crizotinib), and ZYKADIA (ceritinib), with ALECENSA and LORBRENA showing superior PFS (e.g., LORBRENA's median PFS not reached vs. Alunbrig's 24 months).</p>
+                        <p>Up to 75% of ALK-positive NSCLC patients develop brain metastases, making intracranial efficacy critical. Formulary access and high costs (Alunbrig's list price: $17,000/month) are barriers, prompting Takeda to launch value-based pricing with Point32Health in 2021, offering rebates if patients discontinue within 3 months.</p>
+                    </div>
+                    <div id="landscape-edit" style="display: none;">
+                        <textarea class="form-control" id="landscape-textarea" style="min-height: 200px;">Alunbrig (brigatinib) is a second-generation ALK inhibitor for ALK-positive metastatic non-small cell lung cancer (NSCLC), approved by the FDA in 2017 for patients who progressed on crizotinib, and in 2020 for first-line treatment. The ALK-positive NSCLC market is highly competitive, with ALECENSA (alectinib) dominating at $1.65 billion in global sales in 2023, while Alunbrig's sales are lower, e.g., $27.3 million in Q3 2023. The ALK inhibitor market is projected to reach $10.6 billion by 2030, driven by rising NSCLC cases. Competitors include ALECENSA, LORBRENA (lorlatinib), XALKORI (crizotinib), and ZYKADIA (ceritinib), with ALECENSA and LORBRENA showing superior PFS (e.g., LORBRENA's median PFS not reached vs. Alunbrig's 24 months). Up to 75% of ALK-positive NSCLC patients develop brain metastases, making intracranial efficacy critical. Formulary access and high costs (Alunbrig's list price: $17,000/month) are barriers, prompting Takeda to launch value-based pricing with Point32Health in 2021, offering rebates if patients discontinue within 3 months.</textarea>
+                        <div style="margin-top: 15px; text-align: right;">
+                            <button class="btn btn-secondary" id="cancel-edit-btn">Cancel</button>
+                            <button class="btn btn-primary" id="submit-landscape-btn" style="margin-left: 10px;">Submit Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storyboard Output Section -->
+            <div class="section-divider"></div>
+            <div class="section-header">
+                <h2>Generated Storyboard Preview</h2>
+                <div style="margin-left: auto;">
+                    <button class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" style="margin-left: 8px;">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                </div>
+            </div>
+
+            <div class="framework-tabs">
+                <div class="framework-tab active" data-tab="what">WHAT</div>
+                <div class="framework-tab" data-tab="so-what">SO WHAT</div>
+                <div class="framework-tab" data-tab="now-what">NOW WHAT</div>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="tab-content active" id="what-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Overall Findings (Last 3 Waves, n=500 US Oncologists)</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="finding-item">
+                            <div class="finding-title">Prescription Drivers:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Efficacy</strong> is the top driver, with 65% of prescribers citing it <span class="benchmark">(benchmark: 60% for ALK inhibitors in NSCLC)</span>. This aligns with Alunbrig’s ALTA-1L trial data showing a median PFS of 24 months vs. 11 months for crizotinib.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Ease of administration</strong> is valued by 50% <span class="benchmark">(benchmark: 45%)</span>, reflecting Alunbrig’s once-daily dosing (90 mg for 7 days, then 180 mg).
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Barriers to Prescription:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Formulary access</strong> is a major barrier, with 40% of non-prescribers citing it <span class="benchmark">(benchmark: 35%)</span>, consistent with market reports of high costs ($17,000/month) and payer challenges.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Cost concerns</strong> deter 25% <span class="benchmark">(benchmark: 20%)</span>, despite Takeda’s value-based pricing with Point32Health offering rebates for early discontinuation.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Competition</strong> impacts adoption, with 30% preferring alternatives like ALECENSA <span class="benchmark">(benchmark: 25%)</span>, which dominates with $1.65 billion in 2023 sales.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Promotional Effectiveness (PET):</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Sales reps</strong> influence 70% of prescriptions <span class="benchmark">(benchmark: 65%)</span>, a strength for Takeda.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>CME events</strong> have 20% attendance, 80% influence <span class="benchmark">(benchmark: 75%)</span>.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Digital ads</strong> have 30% recall, 40% influence <span class="benchmark">(benchmark: 45%)</span>, underperforming in a competitive market.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Intracranial Efficacy:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    ALTA-1L trial data shows a 78% intracranial ORR for patients with measurable brain metastases, vs. 26% for crizotinib, critical given 75% of ALK-positive NSCLC patients develop brain metastases.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="segmented-section">
+                    <div class="segment-column">
+                        <div class="segment-title">Academic MDs (n=200)</div>
+                        <div class="finding-item">
+                            <div class="finding-title">Drivers:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Efficacy:</strong> 80% cite as a key reason <span class="benchmark">(benchmark: 75%)</span>, supported by Alunbrig’s 24-month PFS and 78% intracranial ORR.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Innovation:</strong> 35% value Alunbrig’s novel mechanism <span class="benchmark">(benchmark: 30%)</span>, aligning with its second-generation ALK inhibitor status.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Barriers:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Formulary access:</strong> 30% cite as a barrier <span class="benchmark">(benchmark: 25%)</span>, less severe than overall due to academic hospital resources.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Cost:</strong> Only 15% mention <span class="benchmark">(benchmark: 10%)</span>, mitigated by institutional support.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Promotional Effectiveness:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>CME events:</strong> 35% attendance, 85% influence <span class="benchmark">(benchmark: 80%)</span>, reflecting academic focus on scientific engagement.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Sales reps:</strong> 50% recall, 65% influence <span class="benchmark">(benchmark: 60%)</span>.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Digital ads:</strong> 20% recall, 30% influence <span class="benchmark">(benchmark: 25%)</span>.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="segment-column">
+                        <div class="segment-title">Community MDs (n=300)</div>
+                        <div class="finding-item">
+                            <div class="finding-title">Drivers:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Ease of administration:</strong> 60% cite as a key reason <span class="benchmark">(benchmark: 55%)</span>, tied to Alunbrig’s once-daily dosing.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Efficacy:</strong> 55% value it <span class="benchmark">(benchmark: 50%)</span>.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Barriers:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Formulary access:</strong> 50% cite as a barrier <span class="benchmark">(benchmark: 45%)</span>, exacerbated by community practice constraints and Alunbrig’s $17,000/month cost.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Cost:</strong> 35% mention patient cost concerns <span class="benchmark">(benchmark: 30%)</span>, despite value-based pricing efforts.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Competition:</strong> 35% prefer alternatives like ALECENSA <span class="benchmark">(benchmark: 30%)</span>, which has a lower list price ($16,078/month) and higher sales.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Promotional Effectiveness:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Sales reps:</strong> 60% recall, 75% influence <span class="benchmark">(benchmark: 70%)</span>, a key channel for community MDs.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Digital ads:</strong> 35% recall, 45% influence <span class="benchmark">(benchmark: 40%)</span>.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>CME events:</strong> 10% attendance, 70% influence <span class="benchmark">(benchmark: 65%)</span>, limited by lower attendance.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="so-what-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Implications</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="finding-item">
+                            <div class="finding-title">Overall Implications:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    Alunbrig’s efficacy (65%, 24-month PFS) and intracranial ORR (78%) position it as a strong contender in ALK-positive NSCLC, especially for patients with brain metastases (up to 75% of cases). However, ALECENSA’s market leadership ($1.65 billion sales) and LORBRENA’s superior PFS (not reached) make Alunbrig less preferred, with 30% of prescribers favoring competitors.
+                                </li>
+                                <li class="bullet-item">
+                                    Formulary access (40%) and cost (25%) barriers exceed benchmarks, reflecting challenges in a market where ALECENSA’s list price is lower ($16,078/month vs. Alunbrig’s $17,000/month). Takeda’s value-based pricing with Point32Health helps, but broader adoption is needed.
+                                </li>
+                                <li class="bullet-item">
+                                    Promotional efforts via reps (70% influence) and CME (80% influence) are strengths, but digital ads (40% influence) lag, missing opportunities in a market projected to reach $10.6 billion by 2030.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="segmented-section">
+                            <div class="segment-column">
+                                <div class="segment-title">Academic MDs:</div>
+                                <ul class="bullet-list">
+                                    <li class="bullet-item">
+                                        High efficacy (80%) and innovation (35%) alignment make academic MDs a strong segment for Alunbrig, supported by its intracranial efficacy (78% ORR), critical for the 75% of patients with brain metastases. However, competition from ALECENSA and LORBRENA (with longer PFS) may limit first-line preference.
+                                    </li>
+                                    <li class="bullet-item">
+                                        CME events (85% influence) are a key lever, but formulary barriers (30%) still hinder broader adoption.
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="segment-column">
+                                <div class="segment-title">Community MDs:</div>
+                                <ul class="bullet-list">
+                                    <li class="bullet-item">
+                                        Lower adoption is driven by formulary (50%) and cost (35%) barriers, both exceeding benchmarks, reflecting practical challenges in community settings where ALECENSA’s lower price and market dominance ($1.65 billion sales) give it an edge.
+                                    </li>
+                                    <li class="bullet-item">
+                                        Reps (75% influence) are effective, but low CME attendance (10%) and ineffective digital ads (45% influence) limit reach, aligning with industry reports on community preferences for practical support.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="finding-item">
+                            <div class="finding-title">Competitive Context:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    Alunbrig’s $27.3 million Q3 2023 sales pale against ALECENSA’s $1.65 billion, and emerging competitors like NVL-655 (Breakthrough Therapy Designation, May 2024) add pressure. Alunbrig must leverage its intracranial efficacy to differentiate.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="now-what-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Actionable Recommendations</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="finding-item">
+                            <div class="finding-title">Overall Actions:</div>
+                            <ul class="bullet-list">
+                                <li class="bullet-item">
+                                    <strong>Address Formulary Barriers:</strong> Expand value-based pricing beyond Point32Health to other payers, using Alunbrig’s 24-month PFS and 78% intracranial ORR to negotiate better formulary access, targeting a reduction in the barrier to the benchmark of 35% within 6 months.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Optimize Promotional Spend:</strong> Shift budget from digital ads (40% influence) to reps (70% influence) and CME events (80% influence), aiming to increase CME attendance from 20% to 25% within a year to compete with ALECENSA’s market reach.
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Counter Competition:</strong> Highlight Alunbrig’s intracranial efficacy (78% ORR) in marketing to differentiate from ALECENSA and LORBRENA, targeting a 5% increase in first-line prescription share within 12 months, especially for patients with brain metastases (75% prevalence).
+                                </li>
+                                <li class="bullet-item">
+                                    <strong>Mitigate Cost Concerns:</strong> Expand patient assistance programs to address cost barriers (25%), targeting a reduction to the benchmark of 20% within 9 months, learning from ALECENSA’s pricing strategy ($16,078/month).
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="segmented-section">
+                            <div class="segment-column">
+                                <div class="segment-title">Academic MDs:</div>
+                                <ul class="bullet-list">
+                                    <li class="bullet-item">
+                                        <strong>Leverage CME:</strong> Increase investment in NSCLC symposia to boost CME attendance from 35% to 40% within 6 months, capitalizing on 85% influence and Alunbrig’s intracranial efficacy (78% ORR).
+                                    </li>
+                                    <li class="bullet-item">
+                                        <strong>Scientific Reinforcement:</strong> Publish more ALTA-1L trial data (24-month PFS, 78% intracranial ORR) in journals to reinforce efficacy (80%) and innovation appeal, aiming for a 5% increase in prescription rate.
+                                    </li>
+                                    <li class="bullet-item">
+                                        <strong>Formulary Push:</strong> Collaborate with academic hospitals to secure formulary inclusion, targeting a reduction in the barrier from 30% to 25% within a year.
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="segment-column">
+                                <div class="segment-title">Community MDs:</div>
+                                <ul class="bullet-list">
+                                    <li class="bullet-item">
+                                        <strong>Rep Focus:</strong> Train reps to emphasize ease of administration (60%) and provide samples, aligning with secondary research, aiming to increase prescription rate from 25% to 30% within 12 months.
+                                    </li>
+                                    <li class="bullet-item">
+                                        <strong>Cost Support:</strong> Expand co-pay assistance programs to address 35% cost concern, targeting a reduction to the benchmark of 30% within 9 months, addressing Alunbrig’s $17,000/month price.
+                                    </li>
+                                    <li class="bullet-item">
+                                        <strong>Payer Negotiations:</strong> Prioritize formulary access in community-heavy regions, using value-based pricing models, targeting a reduction in the barrier from 50% to 45% within a year.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.framework-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.framework-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding content
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+            });
+        });
+
+        // Edit Market Landscape functionality (unchanged from original)
+        const editBtn = document.getElementById('edit-landscape-btn');
+        const landscapeContent = document.getElementById('landscape-content');
+        const landscapeEdit = document.getElementById('landscape-edit');
+        const cancelBtn = document.getElementById('cancel-edit-btn');
+        const submitBtn = document.getElementById('submit-landscape-btn');
+        const textarea = document.getElementById('landscape-textarea');
+
+        editBtn.addEventListener('click', () => {
+            landscapeContent.style.display = 'none';
+            landscapeEdit.style.display = 'block';
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            landscapeEdit.style.display = 'none';
+            landscapeContent.style.display = 'block';
+        });
+
+        submitBtn.addEventListener('click', () => {
+            landscapeContent.innerHTML = `<p>${textarea.value.split('\n').join('</p><p>')}</p>`;
+            landscapeEdit.style.display = 'none';
+            landscapeContent.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
